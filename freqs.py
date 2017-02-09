@@ -12,9 +12,23 @@ def calcfreqs(infile,nqs=None,maxrat=None):
 	return freqs
 
 def highfreqs(freqs,k):
-	sorted_freqs = sorted(freqs.items(), key=lambda t:t[1], reverse=True)	
-	tmp = filter(lambda t:t[1]>=sorted_freqs[k-1][1], sorted_freqs)	
-	return list(tmp)
+	items = freqs.items()
+	unique_freqs = set(map(lambda t:t[1],items))
+	if abs(k) > len(unique_freqs):
+		return freqs	
+	sorted_freqs = sorted(unique_freqs)
+	
+	tmp = []
+	if k > 0:
+		tmp = list(filter(lambda t:t[1]>=sorted_freqs[k-1], items))
+	elif k < 0:
+		tmp = list(filter(lambda t:t[1]<=sorted_freqs[k], items))
+	d = {}
+	for t in tmp:
+		d[t[0]] = t[1]			
+	return d
 
-freqs = calcfreqs('testfile.txt')
-print (highfreqs(freqs, 2))
+freqs = calcfreqs('testfile')
+print freqs
+print highfreqs(freqs, 2)
+print highfreqs(freqs, -2)
